@@ -10,20 +10,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/")
 public class GreetingsController {
+    private final GreetingGenerator greetingGenerator = new GreetingGenerator();
+
     @GetMapping("/hello")
     public ResponseEntity<String> greetTheWorld() {
-        return new ResponseEntity<>("Hello, World.", HttpStatus.OK);
+        return new ResponseEntity<>(greetingGenerator.greet("World"), HttpStatus.OK);
     }
 
     @GetMapping("/hello/{name}")
     public ResponseEntity<String> greetAPerson(@PathVariable String name) {
-        return new ResponseEntity<>(greet(name), HttpStatus.OK);
+        return new ResponseEntity<>(greetingGenerator.greet(name), HttpStatus.OK);
     }
 
     private String greet(String name) {
-        if (name.toUpperCase().equals(name)) {
-            return "HELLO, %s.".formatted(name);
-        }
-        return "Hello, %s.".formatted(name);
+        return greetingGenerator.greet(name);
     }
 }

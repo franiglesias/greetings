@@ -28,23 +28,28 @@ public class GreetingsControllerShould {
 
     @Test
     void greetTheWorld() throws Exception {
-        MvcResult result = givenIDontProvideAName();
-        String contents = whenTheSystemGreetsMe(result);
-        thenTheGreetingIs(contents, "Hello, World.");
+        givenNamesThenGreetingIs("", "Hello, World.");
     }
 
     @Test
     void greetAPerson() throws Exception {
-        MvcResult result = givenIProvideAName("Fran");
-        String contents = whenTheSystemGreetsMe(result);
-        thenTheGreetingIs(contents, "Hello, Fran.");
+        givenNamesThenGreetingIs("Fran", "Hello, Fran.");
     }
 
     @Test
     void greetShouting() throws Exception {
-        MvcResult result = givenIProvideAName("FRAN");
+        givenNamesThenGreetingIs("FRAN", "HELLO, FRAN.");
+    }
+
+    @Test
+    void greetTwoPeople() throws Exception {
+        givenNamesThenGreetingIs("Annie, Bart", "Hello, Annie and Bart.");
+    }
+
+    private void givenNamesThenGreetingIs(String input, String greeting) throws Exception {
+        MvcResult result = givenIProvideAName(input);
         String contents = whenTheSystemGreetsMe(result);
-        thenTheGreetingIs(contents, "HELLO, FRAN.");
+        thenTheGreetingIs(contents, greeting);
     }
 
     private void thenTheGreetingIs(String contents, String expected) {
