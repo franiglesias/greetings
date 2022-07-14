@@ -65,14 +65,6 @@ public class GreetingsControllerShould {
         return result.getResponse().getContentAsString();
     }
 
-    private MvcResult givenIDontProvideAName() throws Exception {
-        MvcResult result = mockMvc.perform(get("/hello"))
-                .andReturn();
-
-        assertThat(result.getResponse().getStatus()).isEqualTo(200);
-        return result;
-    }
-
     private MvcResult givenIProvideAName(String name) throws Exception {
 
         return application.getHello(name);
