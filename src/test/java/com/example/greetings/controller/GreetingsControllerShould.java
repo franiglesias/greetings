@@ -38,12 +38,17 @@ public class GreetingsControllerShould {
 
     @Test
     void greetShouting() throws Exception {
-        givenNamesThenGreetingIs("FRAN", "HELLO, FRAN.");
+        givenNamesThenGreetingIs("FRAN", "HELLO, FRAN!");
     }
 
     @Test
     void greetTwoPeople() throws Exception {
         givenNamesThenGreetingIs("Annie, Bart", "Hello, Annie and Bart.");
+    }
+
+    @Test
+    void greetSeveralPeople() throws Exception {
+        givenNamesThenGreetingIs("Anne,Bart,Charles,Monique", "Hello, Anne, Bart, Charles, and Monique.");
     }
 
     private void givenNamesThenGreetingIs(String input, String greeting) throws Exception {
