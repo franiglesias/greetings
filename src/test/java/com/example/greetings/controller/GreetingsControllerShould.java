@@ -51,6 +51,11 @@ public class GreetingsControllerShould {
         givenNamesThenGreetingIs("Anne,Bart,Charles,Monique", "Hello, Anne, Bart, Charles, and Monique.");
     }
 
+    @Test
+    void greetMixedPeople() throws Exception {
+        givenNamesThenGreetingIs("Anne,BART,Charles,MONIQUE", "Hello, Anne and Charles. AND HELLO, BART AND MONIQUE!");
+    }
+
     private void givenNamesThenGreetingIs(String input, String greeting) throws Exception {
         MvcResult result = givenIProvideAName(input);
         String contents = whenTheSystemGreetsMe(result);

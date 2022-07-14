@@ -1,42 +1,56 @@
 package com.example.greetings.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.function.Function;
 
 public class GreetingGenerator {
+    private final NamesFactory factory;
+
     public GreetingGenerator() {
+        factory = new NamesFactory();
     }
 
     String greet(String input) {
-        Names allNames = new Names(input);
+        Names normal = factory.normal(input);
+        Names shouted = factory.shouted(input);
 
-        String greeted = allNames.join();
-
-        if (greeted.toUpperCase().equals(greeted)) {
-            return "HELLO, %s!".formatted(greeted);
+        if (shouted.length() > 0 && normal.length() > 0) {
+            return "Hello, %s. AND HELLO, %s!".formatted(normal.join(), shouted.join());
         }
-        return "Hello, %s.".formatted(greeted);
+
+        if (shouted.length() > 0) {
+            return "HELLO, %s!".formatted(shouted.join());
+        }
+
+        return "Hello, %s.".formatted(normal.join());
     }
 
-    private class Names {
+    private abstract static class Names {
         private final String[] names;
-        public Names(String input) {
-            this.names = input.split("\s*,\s*");
+
+        private Names(String[] input) {
+            this.names = input;
         }
 
         public String join() {
             String greeted;
             if (length() > 2) {
                 greeted = String.join(", ", exceptLast());
-                return greeted + ", and " + last();
+                return "%s, %s %s".formatted(greeted, conjunction(), last());
             }
 
-            return String.join(" and ", all());
+            return String.join(" %s ".formatted(conjunction()), all());
         }
+
+        abstract protected String conjunction();
+
         public String last() {
             return names[length() - 1];
         }
 
-        private int length() {
+        public int length() {
             return names.length;
         }
 
@@ -48,4 +62,53 @@ public class GreetingGenerator {
             return names;
         }
     }
+
+    private class Shouted extends Names {
+        private Shouted(String[] input) {
+            super(input);
+        }
+
+        @Override
+        public String conjunction() {
+            return "AND";
+        }
+    }
+
+    private class Normal extends Names {
+        private Normal(String[] input) {
+            super(input);
+        }
+
+        @Override
+        public String conjunction() {
+            return "and";
+        }
+    }
+
+
+    class NamesFactory {
+        public Names normal(String input) {
+            String[] theNames = filter(input, (name) -> !name.equals(name.toUpperCase()));
+
+            return new Normal(theNames);
+        }
+
+        public Names shouted(String input) {
+            String[] theNames = filter(input, (name) -> name.equals(name.toUpperCase()));
+
+            return new Shouted(theNames);
+        }
+
+        private String[] filter(String input, Function<String, Boolean> selector) {
+            String[] names = input.split("\s*,\s*");
+            Collection<String> selected = new ArrayList<>();
+            for (String name : names) {
+                if (selector.apply(name)) {
+                    selected.add(name);
+                }
+            }
+            return selected.toArray(new String[0]);
+        }
+    }
+
 }
